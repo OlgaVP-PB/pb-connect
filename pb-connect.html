@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PB Connect - Connecting Planetary Biology Researchers</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Work+Sans:wght@300;400;500;600&display=swap');
+        
+        :root {
+            --primary: #1e4d8b;
+            --primary-light: #2d6bb8;
+            --primary-dark: #0f2c4d;
+            --accent: #d4a574;
+            --accent-light: #e8c7a3;
+            --bg: #fafbfc;
+            --surface: #ffffff;
+            --text: #1a1d23;
+            --text-light: #5f6570;
+            --border: #e1e4e8;
+            --success: #2d8659;
+            --shadow: rgba(30, 77, 139, 0.08);
+            --gradient: linear-gradient(135deg, #1e4d8b 0%, #2d6bb8 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Landing Page */
+        .landing {
+            min-height: 100vh;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .landing::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .landing::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out reverse;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.1); }
+        }
+        
+        .landing-content {
+            max-width: 700px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .logo {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            letter-spacing: -0.03em;
+        }
+        
+        .tagline {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 1.25rem 3rem;
+            background: var(--accent);
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            background: var(--accent-light);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .feature {
+            color: white;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .feature:nth-child(1) { animation-delay: 0.3s; }
+        .feature:nth-child(2) { animation-delay: 0.5s; }
+        .feature:nth-child(3) { animation-delay: 0.7s; }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .feature-desc {
+            opacity: 0.9;
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+        
+        /* Main App Container */
+        .app {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .app.active {
+            display: block;
+        }
+        
+        /* Navigation */
+        nav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-tab {
+            padding: 0.5rem 1rem;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            font-family: inherit;
+        }
+        
+        .nav-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .nav-tab:hover {
+            color: var(--primary);
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        /* Profile Creation */
+        .profile-form {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .form-header h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+        
+        .form-header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+        
+        .form-section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: var(--bg);
+        }
+        
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 77, 139, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .tag-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            min-height: 60px;
+        }
+        
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .tag-remove {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+        
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        /* Swipe Cards */
+        .swipe-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            position: relative;
+            height: 600px;
+        }
+        
+        .card-stack {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .profile-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--surface);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px var(--shadow);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, opacity 0.3s;
+            cursor: grab;
+        }
+        
+        .profile-card:active {
+            cursor: grabbing;
+        }
+        
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+        
+        .card-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+        
+        .card-name {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+        
+        .card-institution {
+            color: var(--text-light);
+            font-size: 1.05rem;
+        }
+        
+        .card-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .card-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-section-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .card-tag {
+            padding: 0.4rem 0.9rem;
+            background: rgba(30, 77, 139, 0.1);
+            color: var(--primary);
+            border-radius: 15px;
+            font-size: 0.875rem;
+        }
+        
+        .looking-for {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .looking-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .swipe-actions {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .swipe-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 2rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+        
+        .swipe-btn.pass {
+            background: #f0f0f0;
+        }
+        
+        .swipe-btn.like {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .swipe-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Search Mode */
+        .search-controls {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+        
+        .search-bar {
+            margin-bottom: 1.5rem;
+        }
+        
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .profile-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .profile-item {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px var(--shadow);
+            display: flex;
+            gap: 2rem;
+            align-items: start;
+            transition: all 0.3s;
+        }
+        
+        .profile-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+        
+        .profile-avatar-small {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .profile-details {
+            flex: 1;
+        }
+        
+        .profile-name-inst {
+            margin-bottom: 1rem;
+        }
+        
+        .profile-name-small {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+        
+        .profile-inst-small {
+            color: var(--text-light);
+        }
+        
+        .btn-connect {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-connect:hover {
+            background: var(--primary-light);
+        }
+        
+        /* Matches */
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .match-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px var(--shadow);
+            text-align: center;
+        }
+        
+        .match-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+        
+        .match-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .match-email {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        
+        /* Match Popup */
+        .match-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .match-popup.active {
+            display: flex;
+        }
+        
+        .match-popup-content {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            animation: popIn 0.4s ease-out;
+        }
+        
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .match-popup h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .nav-tabs {
+                gap: 1rem;
+            }
+            
+            .nav-tab {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .swipe-container {
+                height: 500px;
+            }
+            
+            .profile-item {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing Page -->
+    <div class="landing" id="landing">
+        <div class="landing-content">
+            <h1 class="logo">PB Connect</h1>
+            <p class="tagline">Connecting Planetary Biology researchers across Sweden for collaboration, expertise-sharing, and groundbreaking science</p>
+            <button class="cta-button" onclick="showApp()">Get Started</button>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🔬</div>
+                    <div class="feature-title">Find Collaborators</div>
+                    <div class="feature-desc">Match with researchers in complementary fields</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🤝</div>
+                    <div class="feature-title">Share Expertise</div>
+                    <div class="feature-desc">Connect with experts who can help your project</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Build Networks</div>
+                    <div class="feature-desc">Expand beyond your institution</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main App -->
+    <div class="app" id="app">
+        <nav>
+            <div class="nav-content">
+                <div class="nav-logo">PB Connect</div>
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="showTab('profile')">Profile</button>
+                    <button class="nav-tab" onclick="showTab('swipe')">Discover</button>
+                    <button class="nav-tab" onclick="showTab('search')">Search</button>
+                    <button class="nav-tab" onclick="showTab('matches')">Matches <span id="match-count"></span></button>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Profile Creation -->
+        <div class="tab-content" id="profile-tab">
+            <div class="container">
+                <div class="profile-form">
+                    <div class="form-header">
+                        <h1>Create Your Profile</h1>
+                        <p>Let's help you connect with the right researchers</p>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="section-title">📧 University Email</h3>
+                        <div class="form-group">
+                            <label>Email (must end in .se)</label>
+                            <input type="email" id="email" placeholder="your.name@university.se" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="section-title">👤 Basic Information</h3>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="name" placeholder="Dr. Anna Svensson" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Institution</label>
+                            <select id="institution">
+                                <option value="">Select your institution</option>
+                                <option value="Uppsala University">Uppsala University</option>
+                                <option value="Stockholm University">Stockholm University</option>
+                                <option value="Lund University">Lund University</option>
+                                <option value="University of Gothenburg">University of Gothenburg</option>
+                                <option value="Umeå University">Umeå University</option>
+                                <option value="Linköping University">Linköping University</option>
+                                <option value="Swedish University of Agricultural Sciences">Swedish University of Agricultural Sciences</option>
+                                <option value="Karolinska Institutet">Karolinska Institutet</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <input type="text" id="department" placeholder="e.g., Ecology and Genetics">
+                        </div>
+                        <div class="form-group">
+                            <label>Position</label>
+                            <input type="text" id="position" placeholder="e.g., PhD Student, Postdoc, Professor">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="section-title">🔬 Research & Expertise</h3>
+                        <div class="form-group">
+                            <label>ORCID (optional)</label>
+                            <input type="text" id="orcid" placeholder="0000-0000-0000-0000">
+                        </div>
+                        <div class="form-group">
+                            <label>Research Interests</label>
+                            <textarea id="interests" placeholder="Describe your research interests and expertise areas..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="section-title">🎯 Looking For</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="collaborators"> Collaborators for my project
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="expertise"> Expertise in specific areas
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="grant-partners"> Grant proposal partners
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="feedback"> Feedback on my work
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="networking"> Just networking
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block" onclick="saveProfile()">Save Profile & Start Connecting</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Swipe Mode -->
+        <div class="tab-content" id="swipe-tab" style="display: none;">
+            <div class="container">
+                <div class="swipe-container">
+                    <div class="card-stack" id="card-stack"></div>
+                </div>
+                <div class="swipe-actions">
+                    <button class="swipe-btn pass" onclick="swipeLeft()">✕</button>
+                    <button class="swipe-btn like" onclick="swipeRight()">♥</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Search Mode -->
+        <div class="tab-content" id="search-tab" style="display: none;">
+            <div class="container">
+                <div class="search-controls">
+                    <div class="search-bar">
+                        <input type="text" placeholder="🔍 Search by name, institution, or research interest..." id="search-input">
+                    </div>
+                    <div class="filters">
+                        <select id="filter-institution">
+                            <option value="">All Institutions</option>
+                            <option value="Uppsala University">Uppsala University</option>
+                            <option value="Stockholm University">Stockholm University</option>
+                            <option value="Lund University">Lund University</option>
+                        </select>
+                        <select id="filter-looking">
+                            <option value="">Looking for...</option>
+                            <option value="collaborators">Collaborators</option>
+                            <option value="expertise">Expertise</option>
+                            <option value="grant-partners">Grant Partners</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="profile-list" id="profile-list"></div>
+            </div>
+        </div>
+        
+        <!-- Matches -->
+        <div class="tab-content" id="matches-tab" style="display: none;">
+            <div class="container">
+                <h1 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">Your Matches</h1>
+                <div class="matches-grid" id="matches-grid">
+                    <div class="empty-state">
+                        <div class="empty-icon">💬</div>
+                        <p>No matches yet. Start swiping or searching to connect!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Match Popup -->
+    <div class="match-popup" id="match-popup">
+        <div class="match-popup-content">
+            <h2>It's a Match! 🎉</h2>
+            <p style="font-size: 1.1rem; color: var(--text-light); margin-bottom: 2rem;">
+                You and <span id="match-person-name"></span> are interested in connecting!
+            </p>
+            <button class="btn btn-primary" onclick="closeMatchPopup()">View Matches</button>
+        </div>
+    </div>
+    
+    <script>
+        // Mock researcher profiles
+        const mockProfiles = [
+            {
+                name: "Dr. Anders Svensson",
+                institution: "Uppsala University",
+                department: "Marine Biology",
+                position: "Associate Professor",
+                avatar: "🌊",
+                interests: "Marine genomics, Fish evolution, Conservation genetics",
+                lookingFor: ["collaborators", "grant-partners"],
+                email: "anders.svensson@uu.se",
+                orcid: "0000-0001-2345-6789"
+            },
+            {
+                name: "Prof. Lisa Andersson",
+                institution: "Lund University",
+                department: "Plant Science",
+                position: "Professor",
+                avatar: "🌱",
+                interests: "Plant evolutionary biology, Genomic adaptation, Climate change responses",
+                lookingFor: ["expertise", "feedback"],
+                email: "lisa.andersson@lu.se",
+                orcid: "0000-0002-3456-7890"
+            },
+            {
+                name: "Dr. Erik Johansson",
+                institution: "Stockholm University",
+                department: "Ecology",
+                position: "Postdoctoral Researcher",
+                avatar: "🦋",
+                interests: "Insect biodiversity, Pollinator genomics, eDNA metabarcoding",
+                lookingFor: ["collaborators", "networking"],
+                email: "erik.johansson@su.se",
+                orcid: "0000-0003-4567-8901"
+            },
+            {
+                name: "Dr. Karin Nilsson",
+                institution: "University of Gothenburg",
+                department: "Microbiology",
+                position: "Senior Lecturer",
+                avatar: "🦠",
+                interests: "Microbial ecology, Soil microbiomes, Biogeochemical cycles",
+                lookingFor: ["grant-partners", "expertise"],
+                email: "karin.nilsson@gu.se",
+                orcid: "0000-0004-5678-9012"
+            },
+            {
+                name: "Dr. Johan Berg",
+                institution: "Umeå University",
+                department: "Forest Ecology",
+                position: "Assistant Professor",
+                avatar: "🌲",
+                interests: "Boreal forest ecology, Tree genomics, Climate adaptation",
+                lookingFor: ["collaborators", "feedback"],
+                email: "johan.berg@umu.se",
+                orcid: "0000-0005-6789-0123"
+            },
+            {
+                name: "Dr. Maria Larsson",
+                institution: "Swedish University of Agricultural Sciences",
+                department: "Animal Science",
+                position: "Researcher",
+                avatar: "🐄",
+                interests: "Livestock genomics, Breeding strategies, Sustainable agriculture",
+                lookingFor: ["expertise", "networking"],
+                email: "maria.larsson@slu.se",
+                orcid: "0000-0006-7890-1234"
+            }
+        ];
+        
+        let currentCardIndex = 0;
+        let matches = [];
+        
+        function showApp() {
+            document.getElementById('landing').style.display = 'none';
+            document.getElementById('app').classList.add('active');
+            loadCards();
+            renderSearchProfiles();
+        }
+        
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').style.display = 'block';
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+            
+            // Load appropriate content
+            if (tabName === 'swipe') {
+                loadCards();
+            } else if (tabName === 'search') {
+                renderSearchProfiles();
+            } else if (tabName === 'matches') {
+                renderMatches();
+            }
+        }
+        
+        function loadCards() {
+            const stack = document.getElementById('card-stack');
+            stack.innerHTML = '';
+            
+            if (currentCardIndex >= mockProfiles.length) {
+                stack.innerHTML = '<div class="empty-state"><div class="empty-icon">🎉</div><p>You\'ve seen all profiles! Check back later for new researchers.</p></div>';
+                return;
+            }
+            
+            const profile = mockProfiles[currentCardIndex];
+            
+            const card = document.createElement('div');
+            card.className = 'profile-card';
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-avatar">${profile.avatar}</div>
+                    <div class="card-name">${profile.name}</div>
+                    <div class="card-institution">${profile.institution}</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-section">
+                        <div class="card-section-title">Position</div>
+                        <p>${profile.position}, ${profile.department}</p>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-section-title">Research Interests</div>
+                        <p>${profile.interests}</p>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-section-title">Looking For</div>
+                        <div class="looking-for">
+                            ${profile.lookingFor.map(item => {
+                                const labels = {
+                                    'collaborators': 'Collaborators for projects',
+                                    'expertise': 'Expertise in specific areas',
+                                    'grant-partners': 'Grant proposal partners',
+                                    'feedback': 'Feedback on work',
+                                    'networking': 'Networking'
+                                };
+                                return `<div class="looking-item">✓ ${labels[item]}</div>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                    ${profile.orcid ? `
+                    <div class="card-section">
+                        <div class="card-section-title">ORCID</div>
+                        <a href="https://orcid.org/${profile.orcid}" target="_blank" style="color: var(--primary);">${profile.orcid}</a>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            stack.appendChild(card);
+        }
+        
+        function swipeLeft() {
+            currentCardIndex++;
+            loadCards();
+        }
+        
+        function swipeRight() {
+            const profile = mockProfiles[currentCardIndex];
+            
+            // Simulate match (50% chance)
+            if (Math.random() > 0.5) {
+                matches.push(profile);
+                updateMatchCount();
+                showMatchPopup(profile.name);
+            }
+            
+            currentCardIndex++;
+            loadCards();
+        }
+        
+        function showMatchPopup(name) {
+            document.getElementById('match-person-name').textContent = name;
+            document.getElementById('match-popup').classList.add('active');
+        }
+        
+        function closeMatchPopup() {
+            document.getElementById('match-popup').classList.remove('active');
+            showTab('matches');
+        }
+        
+        function updateMatchCount() {
+            const countEl = document.getElementById('match-count');
+            if (matches.length > 0) {
+                countEl.textContent = `(${matches.length})`;
+                countEl.style.color = 'var(--accent)';
+            }
+        }
+        
+        function renderSearchProfiles() {
+            const list = document.getElementById('profile-list');
+            list.innerHTML = '';
+            
+            mockProfiles.forEach((profile, index) => {
+                const item = document.createElement('div');
+                item.className = 'profile-item';
+                item.innerHTML = `
+                    <div class="profile-avatar-small">${profile.avatar}</div>
+                    <div class="profile-details">
+                        <div class="profile-name-inst">
+                            <div class="profile-name-small">${profile.name}</div>
+                            <div class="profile-inst-small">${profile.position}, ${profile.institution}</div>
+                        </div>
+                        <div class="card-section">
+                            <div class="card-section-title">Research Interests</div>
+                            <p style="color: var(--text-light); margin-bottom: 1rem;">${profile.interests}</p>
+                        </div>
+                        <div class="card-tags">
+                            ${profile.lookingFor.map(item => `<span class="card-tag">${item}</span>`).join('')}
+                        </div>
+                    </div>
+                    <button class="btn-connect" onclick="connectWith(${index})">Connect</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        function connectWith(index) {
+            const profile = mockProfiles[index];
+            if (!matches.find(m => m.name === profile.name)) {
+                matches.push(profile);
+                updateMatchCount();
+                showMatchPopup(profile.name);
+            }
+        }
+        
+        function renderMatches() {
+            const grid = document.getElementById('matches-grid');
+            
+            if (matches.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><p>No matches yet. Start swiping or searching to connect!</p></div>';
+                return;
+            }
+            
+            grid.innerHTML = matches.map(profile => `
+                <div class="match-card">
+                    <div class="match-avatar">${profile.avatar}</div>
+                    <div class="match-name">${profile.name}</div>
+                    <div style="color: var(--text-light); margin-bottom: 1rem;">${profile.institution}</div>
+                    <a href="mailto:${profile.email}" class="match-email">📧 ${profile.email}</a>
+                    ${profile.orcid ? `<div style="margin-top: 0.5rem;"><a href="https://orcid.org/${profile.orcid}" target="_blank" style="color: var(--primary); font-size: 0.9rem;">🔗 ORCID Profile</a></div>` : ''}
+                </div>
+            `).join('');
+        }
+        
+        function saveProfile() {
+            alert('Profile saved! This is a prototype - in the real app, this would save to a database.');
+            showTab('swipe');
+        }
+    </script>
+</body>
+</html>
